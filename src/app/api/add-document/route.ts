@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     const result = await ragAgent.generate([
       {
         role: 'user',
-        content: `Add this document to the knowledge base: "${text}". Use these metadata: ${JSON.stringify(metadata)}`
+        content: `Use the addDocumentTool to process and add the following document to the knowledge base. Document text: "${text}". Associated metadata: ${JSON.stringify(metadata)}.`
       }
     ]);
 

@@ -109,16 +109,16 @@ export const addDocumentTool = createTool({
 });
 
 // Vector search tool for retrieving relevant documents
-export const vectorSearchTool = createVectorQueryTool({
-  id: 'vector-search',
-  description: 'Search the knowledge base using semantic vector search',
-  vectorStoreName: 'vectorize',
-  indexName: 'knowledge-base', 
-  model: google.embedding('text-embedding-004'),
-  enableFilter: true,
-  includeSources: true,
-  includeVectors: false
-});
+// export const vectorSearchTool = createVectorQueryTool({
+//   id: 'vector-search',
+//   description: 'Search the knowledge base using semantic vector search',
+//   vectorStoreName: 'vectorize',
+//   indexName: 'knowledge-base',
+//   model: google.embedding('text-embedding-004'),
+//   enableFilter: true,
+//   includeSources: true,
+//   includeVectors: false
+// });
 
 // Advanced RAG search tool that combines vector search with context processing
 export const ragSearchTool = createTool({
