@@ -5,83 +5,13 @@ import {
   CopilotSidebar, 
   CopilotChat
 } from '@copilotkit/react-ui';
-import { CopilotKit, useCopilotAction } from '@copilotkit/react-core';
+// useCopilotAction is removed as the actions are now handled by the Mastra agent
+import { CopilotKit } from '@copilotkit/react-core';
 
 export function ChatInterface() {
-  // Register the RAG search action with CopilotKit
-  useCopilotAction({
-    name: 'search_knowledge_base',
-    description: 'Search the knowledge base for relevant information',
-    parameters: [
-      {
-        name: 'query',
-        type: 'string',
-        description: 'The search query',
-        required: true,
-      },
-      {
-        name: 'maxResults',
-        type: 'number',
-        description: 'Maximum number of results to return',
-        required: false,
-      }
-    ],
-    handler: async ({ query, maxResults = 5 }: { query: string; maxResults?: number }) => {
-      try {
-        // This will be handled by our Mastra agent via AG-UI
-        const response = await fetch('/api/rag-search', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ query, maxResults }),
-        });
-        
-        const result = await response.json();
-        return result.relevantContext || 'No relevant information found.';
-      } catch (error) {
-        console.error('Error searching knowledge base:', error);
-        return 'Error occurred while searching the knowledge base.';
-      }
-    },
-  });
-
-  // Register the add document action
-  useCopilotAction({
-    name: 'add_document',
-    description: 'Add a document to the knowledge base',
-    parameters: [
-      {
-        name: 'text',
-        type: 'string',
-        description: 'The document text to add',
-        required: true,
-      },
-      {
-        name: 'metadata',
-        type: 'object',
-        description: 'Optional metadata for the document',
-        required: false,
-      }
-    ],
-    handler: async ({ text, metadata = {} }: { text: string; metadata?: Record<string, any> }) => {
-      try {
-        const response = await fetch('/api/add-document', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ text, metadata }),
-        });
-        
-        const result = await response.json();
-        return result.message || 'Document added successfully.';
-      } catch (error) {
-        console.error('Error adding document:', error);
-        return 'Error occurred while adding document to knowledge base.';
-      }
-    },
-  });
+  // The useCopilotAction hooks for 'search_knowledge_base' and 'add_document'
+  // have been removed. These actions will now be handled by the Mastra agent
+  // through the AG-UI endpoint configured in the CopilotKit provider.
 
   return (
     <div className="h-screen w-full">
