@@ -1,0 +1,96 @@
+<context>
+
+# Overview
+This project is a Retrieval-Augmented Generation (RAG) AI agent application. It leverages the Mastra agent framework ([/mastra-ai/mastra](https://context7.com/library/mastra-ai/mastra)) for orchestrating AI agents, CopilotKit ([/copilotkit/copilotkit](https://context7.com/library/copilotkit/copilotkit)) for the frontend chat interface, and AG-UI ([/ag-ui-protocol/ag-ui](https://context7.com/library/ag-ui-protocol/ag-ui)) as a bridge to seamlessly integrate the AI agent with the frontend via Mastra. The system uses Gemini as the primary large language model (LLM).
+
+The product aims to provide users with an interactive, intelligent chat experience that can retrieve and synthesize information from custom data sources, making it valuable for knowledge management, support, and productivity use cases.
+
+
+# Core Features
+- **RAG AI Agent**: Retrieves relevant information from custom data sources and generates context-aware responses using Mastra's RAG and tool APIs. Supports advanced metadata filtering and semantic search (see Mastra RAG docs).
+- **Mastra Agent Framework**: TypeScript-first, supports agent orchestration, workflows, suspend/resume, tool integration, and memory. Agents can be dynamically configured with runtime context, tools, and LLMs. Example:
+  ```ts
+  import { Agent } from "@mastra/core/agent";
+  import { openai } from "@ai-sdk/openai";
+  const myAgent = new Agent({
+    name: "My Agent",
+    instructions: "You are a helpful assistant.",
+    model: openai("gpt-4o-mini"),
+  });
+  ```
+- **CopilotKit Frontend**: React-based UI and infrastructure for AI chat, stateful flows, and in-app copilots. Provides hooks for readable state, actions, and additional instructions. Example:
+  ```tsx
+  import { CopilotKit } from "@copilotkit/react-core";
+  <CopilotKit runtimeUrl="/api/copilotkit">
+    {/* ...app... */}
+  </CopilotKit>
+  ```
+- **AG-UI Bridge**: Implements the Agent-User Interaction Protocol for real-time event streaming between agents and frontend. Supports event types like TEXT_MESSAGE_CHUNK, TOOL_CALL_CHUNK, RUN_STARTED, RUN_FINISHED, and more. Example agent event stream:
+  ```ts
+  observer.next({ type: EventType.TEXT_MESSAGE_CHUNK, messageId, delta: chunk });
+  ```
+- **Gemini LLM Integration**: Utilizes Gemini for advanced natural language understanding and generation. Can be swapped for OpenAI, Claude, or other LLMs via Mastra's pluggable model interface.
+
+
+# User Experience
+- **User Personas**: Knowledge workers, support agents, and end-users seeking intelligent information retrieval.
+- **Key User Flows**: Users input queries via the chat interface; the agent retrieves relevant data and responds contextually. Tool calls and human-in-the-loop steps are surfaced in the UI via AG-UI events.
+- **UI/UX Considerations**: Clean, responsive chat UI; clear feedback on agent actions; easy onboarding. CopilotKit enables custom UI components, state exposure, and action hooks for rich, interactive experiences.
+</context>
+<PRD>
+
+# Technical Architecture
+- **System Components**:
+  - Mastra agent backend (TypeScript, orchestrates agents, tools, workflows)
+  - CopilotKit frontend (React, provides chat UI, state, and actions)
+  - AG-UI bridge (event protocol, real-time streaming)
+  - Gemini LLM API (or OpenAI, Claude, etc.)
+- **Data Models**:
+  - RAG: `MDocument`, chunking, embeddings, vector store (PgVector, Qdrant, Pinecone)
+  - User session, chat history, tool call logs
+- **APIs and Integrations**:
+  - Mastra: `generate`, `stream`, `createTool`, `createWorkflow`, suspend/resume, memory, runtime context
+  - CopilotKit: `useCopilotAction`, `useCopilotReadable`, `CopilotKit` provider, runtimeUrl
+  - AG-UI: EventType enums, event streaming, tool schema, message schema
+  - LLM: Gemini API, OpenAI API, pluggable via Mastra
+- **Infrastructure Requirements**:
+  - Node.js server (for Mastra agent and API endpoints)
+  - Next.js/React frontend (CopilotKit)
+  - Secure API keys for LLMs and vector DBs
+  - Scalable hosting for backend and frontend
+
+
+# Development Roadmap
+- **MVP Requirements**:
+  - Set up Mastra agent with RAG: implement `MDocument` chunking, embedding, and vector store integration
+  - Integrate Gemini LLM (or OpenAI/Claude) via Mastra's model interface
+  - Build CopilotKit chat interface, wrap app in `<CopilotKit runtimeUrl="/api/copilotkit">`
+  - Implement AG-UI event bridge for real-time agent/frontend communication
+- **Future Enhancements**:
+  - Add user authentication and session management
+  - Support for multiple/custom data sources (Qdrant, Pinecone, etc.)
+  - Advanced analytics, logging, and observability (Mastra supports event hooks)
+  - Customizable agent personalities, dynamic toolsets, and workflow branching
+
+
+# Logical Dependency Chain
+- Foundation: Mastra agent and Gemini LLM integration (model config, agent instantiation)
+- Next: RAG logic and data source setup (document chunking, embedding, vector DB)
+- Then: AG-UI bridge implementation (event protocol, message and tool schemas)
+- Finally: CopilotKit frontend and user experience polish (UI, state, actions)
+
+
+# Risks and Mitigations
+- **Technical Challenges**: Ensuring real-time event streaming and tool call handling between agent and frontend (AG-UI event protocol, error handling, retries).
+- **MVP Scope**: Risk of feature creep; mitigated by strict MVP definition and modular agent/workflow design.
+- **Resource Constraints**: LLM API costs, vector DB hosting, and event streaming overhead; mitigated by monitoring usage, optimizing queries, and leveraging Mastra's observability features.
+
+
+# Appendix
+- **Research Findings**: RAG improves response accuracy for domain-specific queries. Mastra's RAG module supports advanced chunking, embedding, and metadata filtering for high-precision retrieval.
+- **Technical Specifications**:
+  - **Mastra**: TypeScript agent framework, supports `Agent`, `createTool`, `createWorkflow`, suspend/resume, memory, runtime context, and RAG. [Mastra Docs](/mastra-ai/mastra)
+  - **CopilotKit**: React UI and infrastructure for AI copilots, supports `CopilotKit` provider, `useCopilotAction`, `useCopilotReadable`, and custom UI. [CopilotKit Docs](/copilotkit/copilotkit)
+  - **AG-UI**: Agent-User Interaction Protocol, event streaming, tool/message schema, and event types. [AG-UI Docs](/ag-ui-protocol/ag-ui)
+  - **Gemini**: LLM integration via Mastra's pluggable model interface. Can be swapped for OpenAI, Claude, etc.
+</PRD>
