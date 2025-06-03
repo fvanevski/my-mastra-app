@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     const result = await ragAgent.generate([
       {
         role: 'user',
-        content: `Search the knowledge base for: ${query}. Return up to ${maxResults} results.`
+        content: `Use the ragSearchTool to find information relevant to the following query: "${query}". Please return up to ${maxResults} results.`
       }
     ]);
 
